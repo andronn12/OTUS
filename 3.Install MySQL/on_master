@@ -1,0 +1,19 @@
+# После уcтавновки MySQL прописать следующие команды;
+
+# Сбрасываем кэш привилегий;
+FLUSH PRIVILEGES;
+
+# Заходим в MySQL и Создаем отдельного пользователя для репликации;
+CREATE USER repl@'%' IDENTIFIED WITH 'caching_sha2_password' BY 'Admin12!';
+
+# Даём ему права на репликацию;
+GRANT REPLICATION SLAVE ON *.* TO repl@'%';
+
+# Смотрим пользователей;
+SELECT User, Host FROM mysql.user;
+
+# Для теста создать таблицу в БД;
+create table TESTA_TEST (id int);
+
+# Смотрим статус Мастера;
+SHOW MASTER STATUS;
