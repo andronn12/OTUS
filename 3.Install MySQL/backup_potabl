@@ -1,0 +1,9 @@
+#!/bin/bash
+PATH=/etc:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
+
+USER="root"
+PASSWORD="Testpass1$"
+DBname="OTUS12"
+
+mysql -u $USER -p$PASSWORD $DBname -e 'show tables' -s --skip-column-names | xargs -P4 -I {} \
+mysqldump -u $USER -p$PASSWORD --add-drop-table --add-locks -q -Q --disable-keys --extended-insert --default-character-set=cp1251 $DBname '{}' -r '{}'.sql
