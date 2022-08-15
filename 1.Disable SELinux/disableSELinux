@@ -1,0 +1,57 @@
+#!/bin/bash
+
+clear
+#Проверка пользователя на root права
+if [ "$(id -u)" != 0 ]
+then 
+	echo "root permission required" && echo ""
+	exit 1
+fi
+
+echo ""
+echo "Идет проверка статуса SELinux..."
+sleep 2
+echo ""
+sestatus | grep "SELinux status"
+sestatus | grep "Current mode"
+echo ""
+echo ""
+sleep 2
+echo "Идет проверка статуса SELinux в конфигурационном файле..."
+echo ""
+sleep 2
+cat /etc/selinux/config | grep "^SELINUX="
+echo ""
+echo ""
+sleep 1
+
+echo ""
+echo -e $'\e[1;32m\e[0m\e[1;32mВыберете необходимое действие с SELinux \e[0m'
+echo ""
+
+printf "\e[1;32m[\e[0m\e[1;77m1\e[0m\e[1;32m]\e[0m\e[1;93m Включить SELinux             \e[1;92m[\e[0m\e[1;77m66\e[0m\e[1;92m]\e[0m\e[1;93m Выход         \n"                                                                       
+printf "\e[1;92m[\e[0m\e[1;77m2\e[0m\e[1;92m]\e[0m\e[1;93m Выключить SELinux			\e[0m           \e[0m\n"                                                                                                                    
+printf "\e[1;92m[\e[0m\e[1;77m3\e[0m\e[1;92m]\e[0m\e[1;93m Выполнить перезагрузку       \e[0m\n"                                                                                                                                                                                 
+
+echo ""
+                
+read -p $'\e[1;33m[\e[0m\e[1;77m+\e[0m\e[1;33m]\e[0m\e[1;32m Введите ваш выбор : \e[0m' option
+case $option in 
+			 
+            1)sed -i "s/SELINUX=disabled/SELINUX=enforcing/" /etc/selinux/config && echo "" && echo "Чтобы изменения вступили в силу, необходимо выполнить перезагрузку системы" && echo ""
+            exit
+            ;;
+
+			2)setenforce 0 && sed -i "s/SELINUX=enforcing/SELINUX=disabled/" /etc/selinux/config && echo "" && echo "Чтобы изменения вступили в силу, необходимо выполнить перезагрузку системы" && echo ""
+			exit
+            ;;
+
+            3)shutdown -r now
+			exit
+            ;;
+
+            66)clear && exit
+			exit
+            ;;
+			esac
+                ;;
