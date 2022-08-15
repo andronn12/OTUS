@@ -1,5 +1,6 @@
 Добавьте права на выполнение файлов install_*
 chmod +x install_*
-Запустите очеерди скрипты установки сервисов Nginx и Apache 
+
+Запустите очеерди скрипты установки сервисов Nginx и Apache
 ./install_nginx
 ./install_apache
