@@ -1,0 +1,5 @@
+Добавьте права на выполнение файла disableSELinux
+chmod +x disableSELinux
+
+Запустите скрипт 
+./disableSELinux
