@@ -1,0 +1,16 @@
+# Поменять server_id (Должен быть больше чем на Master);
+nano /etc/my.cnf server_id = 2
+systemctl restart mysqld
+
+# Проверим применился ли server_id;
+SELECT @@server_id;
+
+SHOW GLOBAL VARIABLES LIKE 'caching_sha2_password_public_key_path';
+SHOW STATUS LIKE 'Caching_sha2_password_rsa_public_key'\G
+
+# Настройка репликации;
+
+STOP SLAVE;
+CHANGE MASTER TO MASTER_HOST='192.168.1.1', MASTER_USER='repl', MASTER_PASSWORD='Admin12!', MASTER_LOG_FILE='binlog.000001', MASTER_LOG_POS=1895813, GET_MASTER_PUBLIC_KEY = 1;
+START SLAVE;
+show slave status\G
