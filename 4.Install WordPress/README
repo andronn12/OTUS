@@ -1,24 +1,14 @@
-# Install PHP
+# Добавьте права на запуск файла install_wp
+chmod +x install_wp
 
-sudo yum install -y http://rpms.remirepo.net/enterprise/remi-release-7.rpm
-sudo yum update
-sudo yum --enablerepo=remi-php74 install php php-bz2 php-mysql php-curl php-gd php-intl php-common php-mbstring php-xml
-sudo systemctl restart httpd
-sudo systemctl stop nginx
+# Запустите скрипт установки WP и его зависимостей
+./install_wp
 
-# Install WordPress
-
-wget http://WordPress.org/latest.tar.gz
-sudo tar -xzvf latest.tar.gz
-sudo mv wordpress/* /var/www/html/
-sudo chown -R apache.apache /var/www/html/
-
-# Create DB in MySQL
-
+# Создайте БД и пользователя для WP 
 create database wordpress;
 CREATE USER 'wpuser'@'localhost' IDENTIFIED BY 'WPPassword12!';
 use wordpress;
 GRANT ALL PRIVILEGES ON wordpress.* TO 'wpuser'@'localhost';
 exit
 
-# Open browser and paste our IP and Install WP
+# Введите в браузере IP вашего хоста и завершите установку WP
