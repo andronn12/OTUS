@@ -1,0 +1,45 @@
+#!/bin/bash
+
+clear
+#Проверка пользователя на root права
+if [ "$(id -u)" != 0 ]
+then 
+	echo "root permission required" && echo ""
+	exit 1
+fi
+
+echo ""
+echo "Начинаем установку компонентов WordPress"
+echo ""
+sleep 3
+yum install -y http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+yum update -y
+yum --enablerepo=remi-php74 install -y php php-bz2 php-mysql php-curl php-gd php-intl php-common php-mbstring php-xml
+systemctl stop nginx
+systemctl restart httpd
+clear
+echo ""
+echo "Установка компонентов WordPress завершена"
+echo ""
+sleep 3
+clear
+echo ""
+echo "Установка WordPress"
+echo ""
+sleep 3
+yum -y install wget
+wget http://WordPress.org/latest.tar.gz
+tar -xzvf latest.tar.gz
+rm -fv /var/www/html/index.html
+mv -fv wordpress/* /var/www/html/
+chown -R apache.apache /var/www/html/
+clear
+echo ""
+echo "1) Установка WordPress завершена"
+echo ""
+echo ""
+echo "2) Не забудь отредактировать файлы httpd.conf и apachebalance.conf ;-)"
+echo ""
+echo ""
+echo "3) Для дальнейшей настройки WP обратитесь к файлу README"
+echo ""
