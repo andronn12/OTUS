@@ -1,1 +1,105 @@
+# установите права на запуск файла install_elk
+chmod +x install_elk
 
+# Запустите установку сервисов filebeat elasticsearch kibana logstash
+./install_elk
+
+# Устанавливаем лимиты памяти для виртуальной машины Java
+cat > /etc/elasticsearch/jvm.options.d/jvm.options
+
+-Xms1g
+-Xmx1g
+
+# Запускаем сервис elasticsearch
+sudo systemctl enable --now elasticsearch.service
+
+# Проверяем
+curl http://127.0.0.1:9200
+
+# Редактируем конфиг kibana. Должны быть такие
+
+sudo nano /etc/kibana/kibana.yml
+
+server.port: 5601
+server.host: "0.0.0.0"
+elasticsearch.hosts: ["http://localhost:9200"]
+
+# Запускаем сервис kibana
+sudo systemctl enable --now kibana
+
+# Редактируем logstash config
+sudo nano /etc/logstash/logstash.yml
+
+path.data: /var/lib/logstash
+path.config: /etc/logstash/conf.d
+path.logs: /var/log/logstash
+
+# Настраиваем обработчик логов от nginx'a
+
+cat > /etc/logstash/conf.d/logstash-nginx-es.conf
+
+input {
+    beats {
+        port => 5400
+    }
+}
+
+filter {
+ grok {
+   match => [ "message" , "%{COMBINEDAPACHELOG}+%{GREEDYDATA:extra_fields}"]
+   overwrite => [ "message" ]
+ }
+ mutate {
+   convert => ["response", "integer"]
+   convert => ["bytes", "integer"]
+   convert => ["responsetime", "float"]
+ }
+ geoip {
+   source => "clientip"
+   add_tag => [ "nginx-geoip" ]
+ }
+ date {
+   match => [ "timestamp" , "dd/MMM/YYYY:HH:mm:ss Z" ]
+   remove_field => [ "timestamp" ]
+ }
+ useragent {
+   source => "agent"
+ }
+}
+
+output {
+ elasticsearch {
+   hosts => ["localhost:9200"]
+   index => "weblogs-%{+YYYY.MM.dd}"
+   document_type => "nginx_logs"
+ }
+ stdout { codec => rubydebug }
+}
+
+# Restart logstash
+sudo systemctl restart logstash.service
+
+# Редактируем конфиг filebeat
+sudo nano /etc/filebeat/filebeat.yml
+
+Закомментарить в главе ===Elasticsearch Output===: #output.elasticsearch
+Закомментарить в главе ===Elasticsearch Output===: #host: ["localhost:9200"]
+Раскоментарить в главе ===Logstash Output===: output.logstash
+Раскоментарить в главе ===Logstash Output===: host: ["localhost:5400"]
+
+Добавить в конец главы ===Filebeat inputs=== содержимое
+
+- type: log
+  paths:
+    - /var/log/nginx/*.log
+  exclude_files: ['\.gz$']
+
+output.logstash:
+  hosts: ["localhost:5400"]
+
+# Запускаем и перезагружаем сервис filebeat
+systemctl enable filebeat
+systemctl restart filebeat
+
+# Заходим в панель (Discover-->create index pattern) и настраиваем визуализацию
+http://IP:5601/app/home#/
