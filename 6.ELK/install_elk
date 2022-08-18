@@ -1,0 +1,47 @@
+#!/bin/bash
+
+clear
+#Проверка пользователя на root права
+if [ "$(id -u)" != 0 ]
+then 
+	echo "root permission required" && echo ""
+	exit 1
+fi
+
+echo ""
+echo "Установка зависимости Java jdk"
+echo ""
+sleep 3
+yum install -y epel-release
+yum install -y java-openjdk-devel java-openjdk
+clear
+echo ""
+echo "Скачиваем пакеты filebeat elasticsearch kibana logstash"
+echo ""
+sleep 3
+
+# filebeat_7.17.3_x86_64-224190-4c3205.rpm
+wget http://185.104.250.212:8080/rpms/filebeat_7.17.3_x86_64-224190-4c3205.rpm
+
+# elasticsearch_7.17.3_x86_64-224190-9bcb26.rpm
+wget http://185.104.250.212:8080/rpms/elasticsearch_7.17.3_x86_64-224190-9bcb26.rpm
+
+# kibana_7.17.3_x86_64-224190-b13e53.rpm
+wget http://185.104.250.212:8080/rpms/kibana_7.17.3_x86_64-224190-b13e53.rpm
+
+# logstash_7.17.3_x86_64-224190-3a605f.rpm
+wget http://185.104.250.212:8080/rpms/logstash_7.17.3_x86_64-224190-3a605f.rpm
+
+clear
+echo ""
+echo "Устанавливаем пакеты filebeat elasticsearch kibana logstash"
+echo ""
+sleep 3
+rpm -i ./*.rpm
+clear
+echo ""
+echo "Установка filebeat elasticsearch kibana logstash завершена"
+echo ""
+echo ""
+echo "Обратитесь к файлу README"
+echo ""
