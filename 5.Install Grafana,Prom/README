@@ -1,39 +1,9 @@
-# Download and install Prometheus, Nodeexporter
-https://prometheus.io/download
-Unzip files tar -xf …
+# установите права на запуск файла install_monitor
+chmod +x install_monitor
 
-# Create users
-useradd --no-create-home --shell /usr/sbin/nologin prometheus
-useradd --no-create-home --shell /bin/false node_exporter
+# Запустите установку сервисов Prometheus node_exporter Grafana
+./install_monitor
 
-# Create dir
-mkdir {/etc/,/var/lib/}prometheus
+# Идем на IP:3000/datasources/ и жмем "Add data source", выбираем Prometheus
 
-# Copy files
-cp -rv consoles console_libraries prometheus.yml /etc/prometheus/
-cp -rv prometheus promtool /usr/local/bin/
-cp -rv node_exporter /usr/local/bin/
-
-# Change owners folders
-chown -vR prometheus: /etc/prometheus/ /var/lib/prometheus/ /usr/local/bin/prom*
-chown -vR node_exporter: /usr/local/bin/node_exporter
-
-# Create files in /etc/systemd/system
-https://github.com/blackden/prometheus_node_grafana > *service
-systemctl daemon-reload
-systemctl start node_exporter.service && systemctl start prometheus.service && systemctl enable node_exporter.service && systemctl enable prometheus.service
-
-# Addd job_name to config file prometheus /etc/prometheus/prometheus.yml
-
-  - job_name: 'node_exporter'
-    scrape_interval: 5s
-    static_configs:
- - targets: ['localhost:9100']
-
-systemctl reload prometheus.service
-
-# Install Grafana
-https://grafana.com/grafana/download?pg=get&plcmt=selfmanaged-box1-cta1&edition=oss
-
-# Start and add autostart Grafana
-systemctl enable --now grafana-server.service
+# Идем на IP:3000/dashboard/import и вводим нужный dashboard ID, жмем Load и наслаждаемся красивыми графиками загрузки нашего сервера...
