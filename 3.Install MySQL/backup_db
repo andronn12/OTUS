@@ -5,7 +5,7 @@ mkdir -p ./backup/mysql
 
 destination="./backup/mysql"
 userDB="root"
-passwordDB="Testpass1$"
+passwordDB="Admin12!"
 fdate=`date +%Y-%m-%d`
  
 find $destination -type d \( -name "*-1[^5]" -o -name "*-[023]?" \) -mtime +30 -exec rm -R {} \; 2>&1
