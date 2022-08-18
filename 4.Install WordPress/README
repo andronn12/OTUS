@@ -4,7 +4,7 @@ chmod +x install_wp
 # Запустите скрипт установки WP и его зависимостей
 ./install_wp
 
-# Создайте БД и пользователя для WP 
+# Создайте БД на master'e и пользователя для WP 
 create database wordpress;
 CREATE USER 'wpuser'@'localhost' IDENTIFIED BY 'WPPassword12!';
 use wordpress;
