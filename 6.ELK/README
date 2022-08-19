@@ -1,7 +1,7 @@
 !!! Прежде чем начинать установку, проверьте в файле install_elk, IP, откуда будут скачиваться пакеты rpm
 
 # Присвоить права на выполнение файла install_elk
-Chmod +x install_elk
+chmod +x install_elk
 
 # Запустите скрипт установки ELK
 ./install_elk
