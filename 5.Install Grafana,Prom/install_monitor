@@ -39,7 +39,7 @@ chown -vR node_exporter: /usr/local/bin/node_exporter
 mv -fv ./prometheus.service /etc/systemd/system
 mv -fv ./node_exporter.service /etc/systemd/system
 systemctl daemon-reload
-systemctl enable --now node_exporter.service && systemctl enable --now prometheus.service
+systemctl start node_exporter.service; systemctl start prometheus.service; systemctl enable --now node_exporter.service; systemctl enable --now prometheus.service;
 
 # Addd job_name to config file prometheus /etc/prometheus/prometheus.yml
 mv -fv ./prometheus.yml /etc/prometheus/
