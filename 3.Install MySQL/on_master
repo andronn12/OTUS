@@ -17,7 +17,6 @@ create database wordpress;
 CREATE USER 'wpuser'@'localhost' IDENTIFIED BY 'WPPassword12!';
 use wordpress;
 GRANT ALL PRIVILEGES ON wordpress.* TO 'wpuser'@'localhost';
-exit
 
 # Смотрим статус Мастера;
 SHOW MASTER STATUS;
