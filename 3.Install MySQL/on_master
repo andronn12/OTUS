@@ -12,6 +12,12 @@ GRANT REPLICATION SLAVE ON *.* TO repl@'%';
 # Смотрим пользователей;
 SELECT User, Host FROM mysql.user;
 
+# Создадим тестовую БД
+create database TESTA_TEST;
+
+# Перейдем в тестовую БД
+use TESTA_TEST;
+
 # Для теста создать таблицу в БД;
 create table TESTA_TEST (id int);
 
