@@ -12,14 +12,12 @@ GRANT REPLICATION SLAVE ON *.* TO repl@'%';
 # Смотрим пользователей;
 SELECT User, Host FROM mysql.user;
 
-# Создадим тестовую БД
-create database TESTA_TEST;
-
-# Перейдем в тестовую БД
-use TESTA_TEST;
-
-# Для теста создать таблицу в БД;
-create table TESTA_TEST (id int);
+# Создайте БД на master'e и пользователя для WP 
+create database wordpress;
+CREATE USER 'wpuser'@'localhost' IDENTIFIED BY 'WPPassword12!';
+use wordpress;
+GRANT ALL PRIVILEGES ON wordpress.* TO 'wpuser'@'localhost';
+exit
 
 # Смотрим статус Мастера;
 SHOW MASTER STATUS;
