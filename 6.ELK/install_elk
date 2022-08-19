@@ -21,16 +21,16 @@ echo ""
 sleep 3
 
 # filebeat_7.17.3_x86_64-224190-4c3205.rpm
-wget http://185.104.250.212:8080/rpms/filebeat_7.17.3_x86_64-224190-4c3205.rpm
+wget http://192.168.49.128/filebeat_7.17.3_x86_64-224190-4c3205.rpm
 
 # elasticsearch_7.17.3_x86_64-224190-9bcb26.rpm
-wget http://185.104.250.212:8080/rpms/elasticsearch_7.17.3_x86_64-224190-9bcb26.rpm
+wget http://192.168.49.128/elasticsearch_7.17.3_x86_64-224190-9bcb26.rpm
 
 # kibana_7.17.3_x86_64-224190-b13e53.rpm
-wget http://185.104.250.212:8080/rpms/kibana_7.17.3_x86_64-224190-b13e53.rpm
+wget http://192.168.49.128/kibana_7.17.3_x86_64-224190-b13e53.rpm
 
 # logstash_7.17.3_x86_64-224190-3a605f.rpm
-wget http://185.104.250.212:8080/rpms/logstash_7.17.3_x86_64-224190-3a605f.rpm
+wget http://192.168.49.128/logstash_7.17.3_x86_64-224190-3a605f.rpm
 
 clear
 echo ""
@@ -42,6 +42,44 @@ clear
 echo ""
 echo "Установка filebeat elasticsearch kibana logstash завершена"
 echo ""
+sleep 3
+clear
 echo ""
-echo "Обратитесь к файлу README"
+echo "Копирование конфигурационных файлов"
+echo ""
+mv -fv ./jvm.options /etc/elasticsearch/jvm.options.d/
+
+# Запускаем сервис elasticsearch
+systemctl enable --now elasticsearch.service
+
+# Проверяем
+curl http://127.0.0.1:9200
+
+mv -fv ./kibana.yml /etc/kibana/
+
+# Запускаем сервис kibana
+sudo systemctl enable --now kibana
+
+# Редактируем logstash config
+mv -fv ./logstash.yml /etc/logstash/
+
+# Настраиваем обработчик логов от nginx'a
+mv -fv ./logstash-nginx-es.conf /etc/logstash/conf.d/
+
+# Restart logstash
+systemctl restart logstash.service
+
+# Редактируем конфиг filebeat
+mv -fv ./filebeat.yml /etc/filebeat/
+
+# Запускаем и перезагружаем сервис filebeat
+systemctl enable filebeat
+systemctl restart filebeat
+
+sleep 3
+clear
+echo ""
+echo "Копирование конфигурационных файлов завершено"
+echo ""
+echo "Заходим в панель IP:5601 (Discover-->create index pattern-->name: weblogs*) и настраиваем визуализацию"
 echo ""
